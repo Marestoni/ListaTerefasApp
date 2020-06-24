@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, Keyboard } from 'react-native';
 import firebase from './src/firebaseConnection';
 import TaskList from './src/TaskList';
@@ -7,8 +7,10 @@ console.disableYellowBox=true;
 
 export default function App() {
 
+  const inputRef= useRef(null);
   const [newTask, setNewTask] = useState('');
   const [tasks, setTasks] = useState([]);
+  const [key, setKey] = useState('');
 
 
   useEffect(()=>{
@@ -30,6 +32,17 @@ export default function App() {
 
   async function handleAdd(){
     if(newTask !== ''){
+
+      if(key !== ''){
+        await firebase.database().ref('tarefas').child(key).update({
+          nome: newTask,
+        });
+        Keyboard.dismiss();
+        setNewTask('');
+        setKey('');
+        return;
+      }
+
       let tarefas = await firebase.database().ref('tarefas');
       let chave = tarefas.push().key;
 
@@ -45,6 +58,13 @@ export default function App() {
   await firebase.database().ref('tarefas').child(key).remove();
   }
 
+function handleEdit(data){
+  setNewTask(data.nome);
+  setKey(data.key);
+  
+  inputRef.current.focus();
+}
+
  return (
    <View style={styles.container}>
      <View style={styles.containerTask}>
@@ -54,6 +74,7 @@ export default function App() {
         underlineColorAndroid="transparent"
         onChangeText={(texto)=> setNewTask(texto) }
         value={newTask}
+        ref={inputRef}
        />
       <TouchableOpacity style={styles.buttonAdd}>
         <Text style={styles.buttonText} onPress={handleAdd}>+</Text>
@@ -64,7 +85,7 @@ export default function App() {
         data={tasks}
         keyExtractor={item => item.key}
         renderItem={({item}) => (
-          <TaskList data={item}  deleteItem={handleDelete} />
+          <TaskList data={item}  deleteItem={handleDelete} editarItem={handleEdit} />
         )}
       />
 
