@@ -2,8 +2,7 @@
 #
 .DS_Store
 
-src/
-firebaseConnection.js
+
 # Xcode
 #
 build/

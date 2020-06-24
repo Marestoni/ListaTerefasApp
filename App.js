@@ -1,5 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, Keyboard } from 'react-native';
+import Icon from 'react-native-vector-icons/Feather';
 import firebase from './src/firebaseConnection';
 import TaskList from './src/TaskList';
 
@@ -65,8 +66,26 @@ function handleEdit(data){
   inputRef.current.focus();
 }
 
+function cancelEdit(){
+  setNewTask('');
+  Keyboard.dismiss();
+  setKey('');
+}
+
  return (
    <View style={styles.container}>
+
+     {key.length > 0 &&(
+      <View style={{flexDirection:'row'}}>
+       <TouchableOpacity onPress={cancelEdit}>
+         <Icon name="x-circle" size={20} color="#FF0000" />
+       </TouchableOpacity>
+       <Text style={{marginLeft:5, marginBottom:8, color:"#FF0000"}}>Editando, clique no X para cancelar</Text>
+      </View>
+     )}
+
+    
+
      <View style={styles.containerTask}>
        <TextInput 
         style={styles.input}
