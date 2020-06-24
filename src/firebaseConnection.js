@@ -9,10 +9,6 @@ let firebaseConfig = {
     storageBucket: "meuapp-76096.appspot.com",
     messagingSenderId: "110649719199",
     appId: "1:110649719199:web:60a11d4c46779be945a5aa"
-<<<<<<< HEAD
-=======
-  };
->>>>>>> e9f270a7f6b7e82b875a1f23848248805f312824
   };
 
   if(!firebase.apps.length){
